@@ -38,27 +38,3 @@ export interface AgentStep {
   label: string;
   detail: string;
 }
-
-// ---------------- DE (Arzthaftung) domain ----------------
-
-export type SourceConfidence = "primary" | "secondary";
-
-export interface DeCase {
-  key: string;
-  caseName: string;
-  court: string;
-  dateFiled: string;
-  citation: string;
-  url: string;
-  category: string;
-  confidence: SourceConfidence;
-  snippet: string;
-}
-
-export interface DeCategory {
-  key: string;
-  name: string;
-  paragraph: string;
-  statute: string;
-  note: string;
-}
