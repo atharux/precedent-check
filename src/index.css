@@ -57,7 +57,21 @@ h1 {
   font-family: var(--disp); font-weight: 700; font-size: clamp(28px, 4vw, 38px);
   letter-spacing: -0.01em; color: var(--ink); margin: 10px 0 10px; text-wrap: balance;
 }
-.thesis { max-width: 58ch; color: var(--body); font-size: 16px; margin: 0; }
+.thesis { max-width: 58ch; color: var(--body); font-size: 16px; margin: 0 0 24px; }
+
+.mentalmap {
+  list-style: none; margin: 0; padding: 16px 18px; display: flex; flex-wrap: wrap; gap: 10px 22px;
+  background: var(--plate); border: 1px solid var(--rule); border-radius: var(--radius);
+}
+.mentalmap li {
+  display: flex; align-items: baseline; gap: 8px; font-size: 13.5px; color: var(--body);
+  font-family: var(--mono);
+}
+.mentalmap b { color: var(--ink); font-family: var(--serif); font-style: italic; }
+.mm-n {
+  display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px;
+  border-radius: 50%; background: var(--rule-firm); color: var(--plate); font-size: 10px; flex-shrink: 0;
+}
 
 .single-plate { margin-top: 32px; }
 
@@ -97,6 +111,8 @@ select.jurisdiction-select {
   border: 1px dashed var(--rule-firm); border-radius: var(--radius); padding: 24px;
   background: var(--plate);
 }
+.draft-gate .doc { margin-top: 20px; border-style: solid; }
+.doc-hint { font-family: var(--mono); font-size: 11px; color: var(--muted); display: block; margin-top: 10px; }
 
 .doc {
   background: var(--plate); border: 1px solid var(--rule); border-radius: var(--radius);

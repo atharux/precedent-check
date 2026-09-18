@@ -15,7 +15,8 @@ function findSameJurisdictionAlternative(jur: JurisdictionCode, exclude: string[
 
 export default function App() {
   const [jurisdiction, setJurisdiction] = useState<JurisdictionCode>("NY");
-  const [drafted, setDrafted] = useState(false);
+  const [drafting, setDrafting] = useState(false);
+  const [draftVisible, setDraftVisible] = useState(false);
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [review, setReview] = useState<Record<string, ReviewVerdict>>({});
   const [liveMessage, setLiveMessage] = useState("");
@@ -44,13 +45,25 @@ export default function App() {
         </div>
         <h1>Precedent Check</h1>
         <p className="thesis">
-          An AI drafting tool cites precedent to justify a clause. Before that citation reaches a
-          real document, does it actually hold up where the document will be used?
+          An LLM drafts a contract clause and picks its own citations. This is the verification
+          layer that sits downstream of it, before anything reaches a real document.
         </p>
+
+        <ol className="mentalmap">
+          <li>
+            <span className="mm-n">1</span> The <b>LLM</b> drafts the clause and its citations
+          </li>
+          <li>
+            <span className="mm-n">2</span> Each citation is checked against real law
+          </li>
+          <li>
+            <span className="mm-n">3</span> A <b>human</b> accepts or flags every one
+          </li>
+        </ol>
       </header>
 
       <section className="single-plate">
-        <div className="step-label">STEP 1 · DRAFT</div>
+        <div className="step-label">STEP 1 · THE LLM DRAFTS</div>
 
         <div className="controls">
           <div className="field">
@@ -71,7 +84,7 @@ export default function App() {
               ))}
             </select>
           </div>
-          <p className="field-note">Citations below re-score live against whatever you pick here.</p>
+          <p className="field-note">Set this first — citations re-score live against whatever you pick.</p>
         </div>
 
         {jurisdictionData.posture === "hostile" && (
@@ -81,25 +94,28 @@ export default function App() {
           </StatusBanner>
         )}
 
-        {!drafted ? (
-          <div className="draft-gate">
+        <div className="draft-gate">
+          {!drafting && (
             <p className="hood-note" style={{ marginBottom: 16 }}>
-              Watch the drafting agent retrieve, rank, and self-check its citations before handing
-              off to you. Simulated sequence — no live model call in this static build.
+              Click below to watch an LLM draft the clause: it retrieves candidate case law, ranks
+              it, writes the clause, then checks its own citations before handing off to you.
+              <b> Simulated sequence</b> — no live model call runs in this static build; the point
+              is the interaction pattern for reviewing what a real one would produce.
             </p>
-            <AgentTrace
-              steps={US_AGENT_STEPS}
-              onAnnounce={announce}
-              onComplete={() => {
-                setDrafted(true);
-                announce("Draft ready for review.");
-              }}
-            />
-          </div>
-        ) : (
-          <>
+          )}
+          <AgentTrace
+            steps={US_AGENT_STEPS}
+            onAnnounce={announce}
+            onStepStart={(key) => {
+              setDrafting(true);
+              if (key === "draft") setDraftVisible(true);
+            }}
+            onComplete={() => announce("Draft ready for your review.")}
+          />
+
+          {draftVisible && (
             <div className="doc">
-              <div className="draftmeta">Employment Agreement · §8 Restrictive Covenants · AI-drafted, unreviewed</div>
+              <div className="draftmeta">LLM output · Employment Agreement · §8 Restrictive Covenants · unreviewed</div>
               <p>
                 During the term of Employee&rsquo;s employment and for a period of twelve (12)
                 months following termination for any reason, Employee shall not, directly or
@@ -125,87 +141,87 @@ export default function App() {
                     />
                   );
                 })}
-                .
+                . <span className="doc-hint">Click a citation above to check it.</span>
               </p>
             </div>
+          )}
+        </div>
 
-            {openKey && (
-              <div className="exhibit-inline">
-                <div className="step-label" style={{ marginTop: 24 }}>
-                  STEP 2 · VERIFY
-                </div>
-                {(() => {
-                  const key = openKey;
-                  const c = CASES[key];
-                  const status = statusOf(key, jurisdiction);
-                  const statusLabel =
-                    status === "binding"
-                      ? "Binding — same jurisdiction"
-                      : status === "blocked"
-                        ? "Binding, but the doctrine defeats the clause"
-                        : "Persuasive only — jurisdiction mismatch";
-                  const reasoning =
-                    status === "binding"
-                      ? `Decided by a ${c.jurisdiction} court. Contract's governing law is also ${jurisdiction}. Same-jurisdiction match → controlling authority, subject to counsel review of the facts.`
-                      : status === "blocked"
-                        ? `Decided in ${c.jurisdiction}, but ${jurisdiction} law is hostile to this clause type. Being binding doesn't help — the statute cuts against the covenant.`
-                        : `Decided by a ${c.jurisdiction} court; the contract is governed by ${jurisdiction} law. Persuasive reasoning at best, not controlling authority here.`;
-                  const chainTarget = CITATION_CHAIN[key];
-                  const altKey = status !== "binding" ? findSameJurisdictionAlternative(jurisdiction, CITED_KEYS) : undefined;
+        {openKey && (
+          <div className="exhibit-inline">
+            <div className="step-label" style={{ marginTop: 24 }}>
+              STEP 2 · YOU VERIFY
+            </div>
+            {(() => {
+              const key = openKey;
+              const c = CASES[key];
+              const status = statusOf(key, jurisdiction);
+              const statusLabel =
+                status === "binding"
+                  ? "Binding — same jurisdiction"
+                  : status === "blocked"
+                    ? "Binding, but the doctrine defeats the clause"
+                    : "Persuasive only — jurisdiction mismatch";
+              const reasoning =
+                status === "binding"
+                  ? `Decided by a ${c.jurisdiction} court. Contract's governing law is also ${jurisdiction}. Same-jurisdiction match → controlling authority, subject to counsel review of the facts.`
+                  : status === "blocked"
+                    ? `Decided in ${c.jurisdiction}, but ${jurisdiction} law is hostile to this clause type. Being binding doesn't help — the statute cuts against the covenant.`
+                    : `Decided by a ${c.jurisdiction} court; the contract is governed by ${jurisdiction} law. Persuasive reasoning at best, not controlling authority here.`;
+              const chainTarget = CITATION_CHAIN[key];
+              const altKey = status !== "binding" ? findSameJurisdictionAlternative(jurisdiction, CITED_KEYS) : undefined;
 
-                  return (
-                    <ExhibitCard
-                      status={status}
-                      statusLabel={statusLabel}
-                      title={c.caseName}
-                      meta={
-                        <>
-                          {c.court} · decided {c.dateFiled} · {c.citation} ·{" "}
-                          <a href={c.url} target="_blank" rel="noopener noreferrer">
-                            view on CourtListener
-                          </a>
-                        </>
-                      }
-                      quote={c.snippet}
-                      figcaption="Verbatim excerpt, public-domain opinion text."
-                      verdict={review[key]}
-                      onAccept={() => {
-                        setReview((r) => ({ ...r, [key]: "accepted" }));
-                        announce(`${c.caseName} accepted`);
-                      }}
-                      onFlag={() => {
-                        setReview((r) => ({ ...r, [key]: "flagged" }));
-                        announce(`${c.caseName} flagged for counsel`);
-                      }}
-                    >
-                      <div className="reasoning">
-                        <b>Why this status:</b> {reasoning}
-                      </div>
-                      {chainTarget && (
-                        <div className="chain">
-                          Confirmed precedent chain: <b>{c.caseName}</b>
-                          <span className="arrow">{"→ cites →"}</span>
-                          <b>{CASES[chainTarget].caseName}</b> ({CASES[chainTarget].dateFiled})
-                        </div>
-                      )}
-                      {altKey && (
-                        <div className="suggestion">
-                          <b>Same-jurisdiction authority available:</b> {altKey.caseName} ({altKey.citation}) — not currently cited.
-                        </div>
-                      )}
-                    </ExhibitCard>
-                  );
-                })()}
-              </div>
-            )}
+              return (
+                <ExhibitCard
+                  status={status}
+                  statusLabel={statusLabel}
+                  title={c.caseName}
+                  meta={
+                    <>
+                      {c.court} · decided {c.dateFiled} · {c.citation} ·{" "}
+                      <a href={c.url} target="_blank" rel="noopener noreferrer">
+                        view on CourtListener
+                      </a>
+                    </>
+                  }
+                  quote={c.snippet}
+                  figcaption="Verbatim excerpt, public-domain opinion text."
+                  verdict={review[key]}
+                  onAccept={() => {
+                    setReview((r) => ({ ...r, [key]: "accepted" }));
+                    announce(`${c.caseName} accepted`);
+                  }}
+                  onFlag={() => {
+                    setReview((r) => ({ ...r, [key]: "flagged" }));
+                    announce(`${c.caseName} flagged for counsel`);
+                  }}
+                >
+                  <div className="reasoning">
+                    <b>Why this status:</b> {reasoning}
+                  </div>
+                  {chainTarget && (
+                    <div className="chain">
+                      Confirmed precedent chain: <b>{c.caseName}</b>
+                      <span className="arrow">{"→ cites →"}</span>
+                      <b>{CASES[chainTarget].caseName}</b> ({CASES[chainTarget].dateFiled})
+                    </div>
+                  )}
+                  {altKey && (
+                    <div className="suggestion">
+                      <b>Same-jurisdiction authority available:</b> {altKey.caseName} ({altKey.citation}) — not currently cited.
+                    </div>
+                  )}
+                </ExhibitCard>
+              );
+            })()}
+          </div>
+        )}
 
-            {reviewedCount > 0 && (
-              <div className="queue-inline">
-                <div className="step-label">STEP 3 · SIGN OFF ({reviewedCount}/{CITED_KEYS.length} reviewed)</div>
-                <ReviewQueue items={queueItems} />
-              </div>
-            )}
-          </>
+        {reviewedCount > 0 && (
+          <div className="queue-inline">
+            <div className="step-label">STEP 3 · YOU DECIDE ({reviewedCount}/{CITED_KEYS.length} reviewed)</div>
+            <ReviewQueue items={queueItems} />
+          </div>
         )}
       </section>
 
