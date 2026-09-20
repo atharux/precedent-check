@@ -113,7 +113,7 @@ export const CASES: Record<string, CaseRecord> = {
   },
 };
 
-// The four cases the draft actually cites, in reading order.
+// The four cases the draft cites, in reading order.
 export const CITED_KEYS = ["edwards_ca", "bdo_seidman_ny", "marsh_tx", "valley_med_az"];
 
 // Confirmed via CourtListener's own citation data (not asserted by hand):
