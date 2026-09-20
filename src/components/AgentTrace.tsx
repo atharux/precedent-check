@@ -12,9 +12,9 @@ type StepStatus = "pending" | "running" | "done";
 
 /**
  * A simulated LLM drafting run, stepped through visibly rather than shown
- * only as a finished result. No live model call executes here — a real
+ * only as a finished result. No live model call executes here. A real
  * version would call an LLM through a backend, which a static front end
- * can't do on its own — the point is the interaction pattern: an AI
+ * can't do on its own. The point is the interaction pattern: an AI
  * process made legible while it runs, feeding a human review gate.
  */
 export function AgentTrace({ steps, onAnnounce, onStepStart, onComplete }: AgentTraceProps) {

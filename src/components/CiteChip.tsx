@@ -27,7 +27,7 @@ export function CiteChip({ label, status, index, pressed, onClick, ariaLabel }: 
     >
       <span className="swatch" aria-hidden="true" />
       {index !== undefined && <span className="n">[{index}]</span>}
-      {label} {"—"} {STATUS_TEXT[status]}
+      {label} {"·"} {STATUS_TEXT[status]}
     </button>
   );
 }

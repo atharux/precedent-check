@@ -7,9 +7,9 @@ import type { CaseRecord, Jurisdiction, CypherQuery } from "../types";
 export const JURISDICTIONS: Record<string, Jurisdiction> = {
   CA: { code: "CA", name: "California", posture: "hostile", basis: "Bus. & Prof. Code §16600 voids employee non-competes with narrow statutory exceptions" },
   NY: { code: "NY", name: "New York", posture: "reasonableness", basis: "common-law reasonableness test (time/geography/scope); partial enforcement via blue-pencil" },
-  TX: { code: "TX", name: "Texas", posture: "reasonableness", basis: "Covenants Not to Compete Act — ancillary to an otherwise enforceable agreement + reasonable limits" },
-  FL: { code: "FL", name: "Florida", posture: "reasonableness", basis: "Fla. Stat. §542.335 — enforceable if protecting a legitimate business interest, reasonable in time/area/scope" },
-  WI: { code: "WI", name: "Wisconsin", posture: "reasonableness", basis: "Wis. Stat. §103.465 — unreasonable restraint is void (no judicial blue-penciling)" },
+  TX: { code: "TX", name: "Texas", posture: "reasonableness", basis: "Covenants Not to Compete Act: ancillary to an otherwise enforceable agreement plus reasonable limits" },
+  FL: { code: "FL", name: "Florida", posture: "reasonableness", basis: "Fla. Stat. §542.335: enforceable if protecting a legitimate business interest, reasonable in time/area/scope" },
+  WI: { code: "WI", name: "Wisconsin", posture: "reasonableness", basis: "Wis. Stat. §103.465: unreasonable restraint is void (no judicial blue-penciling)" },
   TN: { code: "TN", name: "Tennessee", posture: "reasonableness", basis: "common-law reasonableness test; continued employment can be sufficient consideration" },
   AZ: { code: "AZ", name: "Arizona", posture: "reasonableness", basis: "common-law reasonableness test, weighed against public interest (patient choice in physician cases)" },
 };

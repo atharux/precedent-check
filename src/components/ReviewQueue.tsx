@@ -11,7 +11,7 @@ interface ReviewQueueProps {
   emptyLabel?: string;
 }
 
-/** The attorney sign-off list — the human-in-the-loop gate, mirrored from Hydra's Review Gatekeeper pattern. */
+/** The attorney sign-off list: the human-in-the-loop gate, mirrored from Hydra's Review Gatekeeper pattern. */
 export function ReviewQueue({ items, emptyLabel = "No citations reviewed yet." }: ReviewQueueProps) {
   if (items.length === 0) {
     return <p className="queue-empty">{emptyLabel}</p>;

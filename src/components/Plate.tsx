@@ -9,7 +9,7 @@ interface PlateProps {
   className?: string;
 }
 
-/** The recurring numbered-plate wrapper used across the demo — lightMuseum lineage. */
+/** The recurring numbered-plate wrapper used across the demo, lightMuseum lineage. */
 export function Plate({ number, label, title, titleId, children, className }: PlateProps) {
   return (
     <section className={`plate ${className ?? ""}`} aria-labelledby={titleId}>

@@ -41,7 +41,7 @@ export default function App() {
     <div className="wrap">
       <header>
         <div className="kicker">
-          <span className="dot" aria-hidden="true" /> PROTOTYPE — NOT LEGAL ADVICE
+          <span className="dot" aria-hidden="true" /> PROTOTYPE · NOT LEGAL ADVICE
         </div>
         <h1>Precedent Check</h1>
         <p className="thesis">
@@ -84,12 +84,12 @@ export default function App() {
               ))}
             </select>
           </div>
-          <p className="field-note">Set this first — citations re-score live against whatever you pick.</p>
+          <p className="field-note">Set this first. Citations re-score live against whatever you pick.</p>
         </div>
 
         {jurisdictionData.posture === "hostile" && (
           <StatusBanner flag="Clause blocked">
-            {jurisdictionData.name} — <code>{jurisdictionData.basis}</code>. Citations can still be
+            {jurisdictionData.name}: <code>{jurisdictionData.basis}</code>. Citations can still be
             real case law, but the covenant itself is likely unenforceable as drafted.
           </StatusBanner>
         )}
@@ -99,7 +99,7 @@ export default function App() {
             <p className="hood-note" style={{ marginBottom: 16 }}>
               Click below to watch an LLM draft the clause: it retrieves candidate case law, ranks
               it, writes the clause, then checks its own citations before handing off to you.
-              <b> Simulated sequence</b> — no live model call runs in this static build; the point
+              <b> Simulated sequence.</b> No live model call runs in this static build. The point
               is the interaction pattern for reviewing what a real one would produce.
             </p>
           )}
@@ -158,15 +158,15 @@ export default function App() {
               const status = statusOf(key, jurisdiction);
               const statusLabel =
                 status === "binding"
-                  ? "Binding — same jurisdiction"
+                  ? "Binding, same jurisdiction"
                   : status === "blocked"
                     ? "Binding, but the doctrine defeats the clause"
-                    : "Persuasive only — jurisdiction mismatch";
+                    : "Persuasive only, jurisdiction mismatch";
               const reasoning =
                 status === "binding"
                   ? `Decided by a ${c.jurisdiction} court. Contract's governing law is also ${jurisdiction}. Same-jurisdiction match → controlling authority, subject to counsel review of the facts.`
                   : status === "blocked"
-                    ? `Decided in ${c.jurisdiction}, but ${jurisdiction} law is hostile to this clause type. Being binding doesn't help — the statute cuts against the covenant.`
+                    ? `Decided in ${c.jurisdiction}, but ${jurisdiction} law is hostile to this clause type. Being binding doesn't help. The statute cuts against the covenant.`
                     : `Decided by a ${c.jurisdiction} court; the contract is governed by ${jurisdiction} law. Persuasive reasoning at best, not controlling authority here.`;
               const chainTarget = CITATION_CHAIN[key];
               const altKey = status !== "binding" ? findSameJurisdictionAlternative(jurisdiction, CITED_KEYS) : undefined;
@@ -208,7 +208,7 @@ export default function App() {
                   )}
                   {altKey && (
                     <div className="suggestion">
-                      <b>Same-jurisdiction authority available:</b> {altKey.caseName} ({altKey.citation}) — not currently cited.
+                      <b>Same-jurisdiction authority available:</b> {altKey.caseName} ({altKey.citation}), not currently cited.
                     </div>
                   )}
                 </ExhibitCard>
@@ -233,7 +233,7 @@ export default function App() {
           <div className="hood-body">
             <UnderTheHood
               queries={US_QUERIES}
-              note="These three queries ran for real, against real case data, in a local Neo4j 5 instance. At eight cases this is provable in a spreadsheet — the reason to model it as a graph shows up at scale: verifying a citation is a walk (case → jurisdiction → does it match governing law), and a real 'is this still good law' check is N hops of CITES/OVERRULED_BY edges."
+              note="These three queries ran for real, against real case data, in a local Neo4j 5 instance. At eight cases this is provable in a spreadsheet. The reason to model it as a graph shows up at scale: verifying a citation is a walk (case to jurisdiction to does it match governing law), and a real 'is this still good law' check is N hops of CITES/OVERRULED_BY edges."
             />
           </div>
         </details>
@@ -241,7 +241,7 @@ export default function App() {
           8 real opinions from the CourtListener API (Free Law Project), public-domain text. The
           BDO Seidman {"→"} Karpinski citation chain was confirmed from the opinion's own
           citation data. Component set documented in Storybook (<code>npm run storybook</code>).
-          Interaction-design prototype, not a production legal tool — nothing here is legal
+          Interaction-design prototype, not a production legal tool. Nothing here is legal
           advice.
         </p>
       </footer>
