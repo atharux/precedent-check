@@ -20,6 +20,7 @@ type StepStatus = "pending" | "running" | "done";
 export function AgentTrace({ steps, onAnnounce, onStepStart, onComplete }: AgentTraceProps) {
   const [statuses, setStatuses] = useState<StepStatus[]>(() => steps.map(() => "pending"));
   const [running, setRunning] = useState(false);
+  const [everRun, setEverRun] = useState(false);
   const timeoutRef = useRef<number | undefined>(undefined);
 
   useEffect(() => () => window.clearTimeout(timeoutRef.current), []);
@@ -27,6 +28,7 @@ export function AgentTrace({ steps, onAnnounce, onStepStart, onComplete }: Agent
   function run() {
     if (running) return;
     setRunning(true);
+    setEverRun(true);
     setStatuses(steps.map(() => "pending"));
 
     let i = 0;
@@ -50,7 +52,12 @@ export function AgentTrace({ steps, onAnnounce, onStepStart, onComplete }: Agent
 
   return (
     <>
-      <button type="button" className="act accept agent-run-btn" onClick={run} disabled={running}>
+      <button
+        type="button"
+        className={`act accept agent-run-btn${everRun ? "" : " nudge"}`}
+        onClick={run}
+        disabled={running}
+      >
         {running ? "Generating…" : "▶ Generate draft with AI"}
       </button>
       <ol className="agent-log">
