@@ -26,7 +26,7 @@ Three decisions carry the point:
    appears attached to the moment it's written, not as a disconnected
    reveal afterward.
 2. **Nothing is accepted without a human.** The review-queue gate mirrors a
-   "Review Gatekeeper" pattern from a 9-agent job-application pipeline
+   "Review Gatekeeper" pattern from a six-stage job-application pipeline
    built earlier, applied here to citations instead of applications.
 3. **The graph is real, not staged for the UI.** The citation dataset was
    loaded into a local Neo4j 5 instance and queried with real Cypher. The
